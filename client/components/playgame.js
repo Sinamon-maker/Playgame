@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateState } from '../redux/reducers/play'
+import { updateState, setTimeoutID, clearT} from '../redux/reducers/play'
+import './playgame.scss'
 
 const Playgame = () => {
   let timeoutId = null
@@ -11,6 +12,13 @@ const Playgame = () => {
   const userScore = array.filter((it) => it.stat === 'user').length
 
   const computerScore = array.filter((it) => it.stat === 'computer').length
+
+  const winner = () => {
+    let data = ''
+    if (computerScore >= array.length / 2) { data = 'Computer win'}
+    if (userScore >= array.length / 2 ) { data = 'You win' }
+    return data
+  }
 
   const getRandomField = () => {
     if (userScore <= array.length / 2 && computerScore <= array.length / 2) {
@@ -23,47 +31,58 @@ const Playgame = () => {
   const selected = getRandomField(array)
 
   function chooseNextRound() {
-      timeoutId = setTimeout(() => {
-        dispatch(updateState(selected, 'computer'))
-      }, 3000)
-      //  clearTimeout(timeoutId)
-      getRandomField()
+    timeoutId = setTimeout(() => {
+      dispatch(updateState(selected, 'computer'))
+    }, 1000)
+    dispatch(setTimeoutID(timeoutId))
+    //   getRandomField()
   }
 
   useEffect(() => {
     if (selected !== null) {
-    chooseNextRound(selected)
-  }}, [selected])
+      chooseNextRound(selected)
+    }
+  }, [selected])
+
+  const x = size.iks
 
   return (
-    <div>
-      <div className="flex items-center justify-center h-screen">
-        Score: {userScore}
-        <div className="flex flex-wrap" style={{ flexBasis: `${size.iks * 100}px` }}>
-          {array.map((it) => {
-            const classes = `
+
+     <div className=" flex items-center justify-center border border-red-600 w-700px h-screen">
+        <div className="flex flex-col border border-red-600" style={{ flexBasis: `${x * 48} px` }}>
+        <div>  {winner() } </div>
+  <div> Score: {userScore}</div>
+          <div>
+            <div
+              className="flex flex-row flex-wrap border border-gray-700" style={{ flexBasis: `${x * 48} px`}}
+            >
+              <div>
+                {array.map((it) => {
+                  const classes = `
              ${it.stat === 'free' ? ' bg-gray-200' : ''}
              ${it.id === selected ? ' bg-yellow-200' : ''}
              ${it.stat === 'user' ? ' bg-green-200' : ''}
              ${it.stat === 'computer' ? ' bg-red-200' : ''}
             `
-            return (
-              <button
-                className={`block box-border h-100px w-100x hover:bg-blue-700 text-white font-bold py-2 px-2 rounded ${classes}`}
-                key={it.id}
-                type="button"
-                aria-label="click"
-                onClick={() => {
-                  if (it.id === selected) {
-                    dispatch(updateState(it.id, 'user'))
-                    clearTimeout(timeoutId)
-                  }
-                }}
-              />
-            )
-          })}
+                  return (
+                    <button
+                      className={`box border-gray-500 h-25 w-25 hover:bg-blue-700 rounded border-2${classes}`}
+                      key={it.id}
+                      type="button"
+                      aria-label="click"
+                      onClick={() => {
+                        if (it.id === selected) {
+                          dispatch(updateState(it.id, 'user'))
+                          dispatch(clearT(timeoutId))
+                        }
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
     </div>
   )
 }

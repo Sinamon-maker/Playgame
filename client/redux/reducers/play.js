@@ -4,6 +4,7 @@ const SET_STATE = 'SET_STATE'
 const SET_TIME = 'SET_TIME'
 const SET_CLEAR = 'SET_CLEAR'
 
+
 const initialState = {
   size: {
     iks: 5,
@@ -20,16 +21,34 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SIZE_IKS:
+    case SIZE_IKS:{
+      const newArray =
+        new Array([action.iks] * state.size.vert).fill(null).map((it, index) => {
+          return {
+            id: index + 1,
+            stat: 'free'
+          }
+    })
       return {
         ...state,
-        size: { ...state, iks: [action.iks]}
+        size: { ...state, iks: [action.iks]},
+        array: newArray
       }
-    case SIZE_VERT:
+    }
+    case SIZE_VERT:{
+      const newArray =
+        new Array(state.size.iks * [action.vert]).fill(null).map((it, index) => {
+          return {
+            id: index + 1,
+            stat: 'free'
+          }
+        })
       return {
         ...state,
-        size: { ...state, vert: action.vert }
+        size: { ...state, vert: action.vert },
+        array: newArray
       }
+    }
         case SET_STATE:
       return {
         ...state,
@@ -72,6 +91,6 @@ export function setTimeoutID(timeoutId) {
   return { type: SET_TIME, timeoutId }
 }
 
-export function clearT(tid) {
-  return { type: SET_CLEAR, tid }
+export function clearT(timeoutId ){
+  return { type: SET_CLEAR, timeoutId }
 }
