@@ -33,7 +33,7 @@ const Playgame = () => {
   }
 
   useEffect(() => {
-            if (selected !== null) {
+    if (selected !== null) {
       chooseNextRound(selected)
     }
   }, [selected])
@@ -42,7 +42,7 @@ const Playgame = () => {
 
   return (
     <div className=" flex items-center justify-center border border-red-600  h-screen">
-      <div className="flex flex-col border border-red-600 w-100" >
+      <div className="flex flex-col border border-red-600 w-100">
         <div> {winner()} </div>
         <div> Score: {userScore}</div>
         <div>
@@ -67,7 +67,7 @@ const Playgame = () => {
                     onClick={() => {
                       if (it.id === selected) {
                         dispatch(updateState(it.id, 'user'))
-                                         }
+                      }
                     }}
                   />
                 )
