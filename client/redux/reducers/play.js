@@ -1,8 +1,12 @@
+ // import { getState } from 'react'
+
 const SIZE_IKS = 'SIZE_IKS'
 const SIZE_VERT = 'SIZE_VERT'
 const SET_STATE = 'SET_STATE'
-const SET_TIME = 'SET_TIME'
+ const SET_TIME = 'SET_TIME'
 const SET_CLEAR = 'SET_CLEAR'
+const  SET_NULL = 'SET_NULL'
+const SET_RANDOM = 'SET_RANDOM'
 
 
 const initialState = {
@@ -16,6 +20,7 @@ const initialState = {
       stat: 'free'
     }
   }),
+  selected: new Array(25).fill(null).map((it, index) => index+1)[Math.floor(Math.random() * 25)],
   tid: null
 }
 
@@ -58,13 +63,26 @@ export default (state = initialState, action) => {
             stat: it.id === action.id ? action.st : it.stat
           }
         }),
-                 }
+        selected: action.selected,
+        tid: action.timeoutID
+                        }
+    case SET_RANDOM:
+      return {
+        ...state,
+        selected: action.selected,
+        tid: action.timeoutID
+      }
     case SET_TIME:
       return {
         ...state,
         tid: action.timeoutId
       }
-      case SET_CLEAR:
+        case SET_NULL:
+      return {
+        ...state,
+        selected: action.selected
+      }
+          case SET_CLEAR:
       return {
         ...state,
         tid: clearTimeout(action.timeoutId)
@@ -82,11 +100,26 @@ export function setSiztwo(vert) {
   return { type: SIZE_VERT, vert }
 }
 
-export function updateState(id, st, tid) {
-  return { type: SET_STATE, id, st, tid}
+
+export function updateState(id, st) {
+  return (dispatch, getState) => {
+    const { array, tid } = getState().play
+    const userScore = array.filter((it) => it.stat === 'user').length
+    const computerScore = array.filter((it) => it.stat === 'computer').length
+    const timeoutID = clearTimeout(tid)
+    let selected
+    if (userScore <= array.length / 2 && computerScore <= array.length / 2) {
+      const gameFieldFree = array.filter((it) => it.stat === 'free')
+      selected = gameFieldFree[Math.floor(Math.random() * gameFieldFree.length)].id
+
+      dispatch({ type: SET_STATE, id, st, selected, timeoutID })
+    }
+    if (userScore > array.length / 2 && computerScore > array.length / 2) {
+      selected = null
+      dispatch({ type: SET_STATE, id, st, selected, timeoutID })
+    }
+  }
 }
-
-
 export function setTimeoutID(timeoutId) {
   return { type: SET_TIME, timeoutId }
 }
@@ -94,3 +127,14 @@ export function setTimeoutID(timeoutId) {
 export function clearT(timeoutId ){
   return { type: SET_CLEAR, timeoutId }
 }
+
+export function setSelectednull() {
+  return (dispatch, getState) => {
+    let { selected} = getState().play
+    selected = null
+    dispatch ({ type: SET_NULL, selected })
+}}
+
+
+
+
