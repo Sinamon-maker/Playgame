@@ -1,5 +1,3 @@
- // import { getState } from 'react'
-
 const SIZE_IKS = 'SIZE_IKS'
 const SIZE_VERT = 'SIZE_VERT'
 const SET_STATE = 'SET_STATE'
@@ -104,20 +102,25 @@ export function setSiztwo(vert) {
 export function updateState(id, st) {
   return (dispatch, getState) => {
     const { array, tid } = getState().play
-    const userScore = array.filter((it) => it.stat === 'user').length
-    const computerScore = array.filter((it) => it.stat === 'computer').length
+    const arraymap = array.map((it) => {
+      return {
+        ...it,
+        stat: it.id === id ? st : it.stat
+      }
+    })
+    const userScore = arraymap.filter((it) => it.stat === 'user').length
+    const computerScore = arraymap.filter((it) => it.stat === 'computer').length
     const timeoutID = clearTimeout(tid)
     let selected
-    if (userScore <= array.length / 2 && computerScore <= array.length / 2) {
-      const gameFieldFree = array.filter((it) => it.stat === 'free')
+    if (userScore < arraymap.length / 2 && computerScore < arraymap.length / 2) {
+      const gameFieldFree = arraymap.filter((it) => it.stat === 'free')
       selected = gameFieldFree[Math.floor(Math.random() * gameFieldFree.length)].id
 
-      dispatch({ type: SET_STATE, id, st, selected, timeoutID })
-    }
-    if (userScore > array.length / 2 && computerScore > array.length / 2) {
+         }
+    if (userScore >= arraymap.length / 2 && computerScore >= arraymap.length / 2) {
       selected = null
-      dispatch({ type: SET_STATE, id, st, selected, timeoutID })
     }
+    dispatch({ type: SET_STATE, id, st, selected, timeoutID })
   }
 }
 export function setTimeoutID(timeoutId) {

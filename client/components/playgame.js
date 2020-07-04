@@ -26,16 +26,17 @@ const Playgame = () => {
   }
 
   function chooseNextRound(selected2) {
+    if (selected !== null) {
     timeoutId = setTimeout(() => {
       dispatch(updateState(selected2, 'computer'))
     }, 1000)
     dispatch(setTimeoutID(timeoutId))
-  }
+  }}
 
   useEffect(() => {
-    if (selected !== null) {
+
       chooseNextRound(selected)
-    }
+  
   }, [selected])
 
   const x = size.iks
