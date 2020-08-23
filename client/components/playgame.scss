@@ -5,4 +5,53 @@
     margin: 1px;
     border-width: 1px;
     box-sizing: content-box;
+    
+}
+
+.auterbox {
+    height: 650px;
+    width: 650px;
+    box-sizing: content-box;
+}
+
+.auter {
+    height: 48px;
+    width: 48px;
+   }
+
+
+$r: #c03;
+$g: #429032;
+$b: #2963BD;
+$y: #c90;
+
+@mixin chevron($direction, $width, $height, $skew, $color) {
+	position: relative;
+	width: $width;
+	height: $height;
+	&:before, &:after {
+		position: absolute;
+		top: 0;
+		width: 50%;
+		height: 100%;
+		background: $color;
+		content: '';
+	}
+	&:before {
+		left: 0;
+		transform: skew(0deg, $skew);
+	}
+	&:after {
+		right: 0;
+		transform: skew(0deg, -$skew);
+	}
+}
+
+.chevron {
+	@include chevron(down, 120px, 40px, 15deg, $y );
+}
+
+.ctnr { padding: 10px 20px 20px; margin: 10px; background: rgba(black,.2); border-radius: 2px; box-shadow: inset 0 0 0 2px rgba(black,.05), 1px 1px 5px rgba(black,.2); position: relative;
+   &--hex-adjust { @extend .ctnr; padding: 45px 50px 20px; }
+   div { margin: auto; }
 }
